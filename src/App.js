@@ -25,6 +25,8 @@ import Amplify, { PubSub } from 'aws-amplify';
 import { AWSIoTProvider } from '@aws-amplify/pubsub/lib/Providers';
 import Home from './views/Home';
 import Kitchen from './features/kitchen/Kitchen';
+import kitchenSlice, { setToasterSetting } from './features/kitchen/kitchenSlice';
+import store from './store';
 
 
 
@@ -42,8 +44,11 @@ Amplify.addPluggable(new AWSIoTProvider({
   aws_pubsub_endpoint: `wss://${process.env.REACT_APP_MQTT_ID}.iot.${process.env.REACT_APP_REGION}.amazonaws.com/mqtt`,
 }));
 
-Amplify.PubSub.subscribe('doggo').subscribe({
-  next: data => console.log('Message received', data),
+Amplify.PubSub.subscribe('kitchen').subscribe({
+  next: data => {
+    console.log('Message received', data);
+    store.dispatch(setToasterSetting(data.value.message))
+  },
   error: error => console.error(error),
   close: () => console.log('Done'),
 });

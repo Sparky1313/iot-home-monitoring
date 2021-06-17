@@ -22,13 +22,14 @@ import {
     CardContent,
     Slider
   } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { 
     Chart,
     PieSeries,
     Title
 } from '@devexpress/dx-react-chart-material-ui';
 import { Animation } from '@devexpress/dx-react-chart';
+import { kitchenSlice } from './kitchenSlice';
 
 
 const useStyles = makeStyles({
@@ -42,7 +43,10 @@ const useStyles = makeStyles({
 
   export default function Kitchen(props) {
       const classes = useStyles();
+      const dispatch = useDispatch();
+      const kitchenActions = kitchenSlice.actions;
       let toasterSetting = useSelector(state => state.kitchen.toasterSetting);
+      
       const toasterSettingMarks = [
         {
             value: 1,
@@ -86,6 +90,8 @@ const useStyles = makeStyles({
         }
       ];
 
+    
+
 
     return (
         <Grid justify="center" container>
@@ -110,7 +116,7 @@ const useStyles = makeStyles({
                     </CardContent>
                 </Card>
             </Grid>
-            <Link to="/Home">Home</Link>
+            {/* <Link to="/Home">Home</Link> */}
             {/* <Chart data={chartData}>
                 <PieSeries
                     valueField="val"
@@ -126,6 +132,7 @@ const useStyles = makeStyles({
                     step={1}
                     valueLabelDisplay="on"
                     marks={toasterSettingMarks}
+                    onChange={(evt, value) => dispatch(kitchenActions.setToasterSetting(value))}
                 />
             </Grid>
         </Grid>
