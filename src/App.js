@@ -44,10 +44,14 @@ Amplify.addPluggable(new AWSIoTProvider({
   aws_pubsub_endpoint: `wss://${process.env.REACT_APP_MQTT_ID}.iot.${process.env.REACT_APP_REGION}.amazonaws.com/mqtt`,
 }));
 
-Amplify.PubSub.subscribe('kitchen').subscribe({
+Amplify.PubSub.subscribe('kitchen/toaster').subscribe({
   next: data => {
     console.log('Message received', data);
-    store.dispatch(setToasterSetting(data.value.message))
+    console.log("The value is:" + data.value.toasterSetting);
+
+    if (data.value.toasterSetting >= 0) {
+      store.dispatch(setToasterSetting(data.value.toasterSetting));
+    }
   },
   error: error => console.error(error),
   close: () => console.log('Done'),

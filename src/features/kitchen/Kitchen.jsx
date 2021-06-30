@@ -30,6 +30,7 @@ import {
 } from '@devexpress/dx-react-chart-material-ui';
 import { Animation } from '@devexpress/dx-react-chart';
 import { kitchenSlice } from './kitchenSlice';
+import { PubSub } from 'aws-amplify';
 
 
 const useStyles = makeStyles({
@@ -132,7 +133,15 @@ const useStyles = makeStyles({
                     step={1}
                     valueLabelDisplay="on"
                     marks={toasterSettingMarks}
-                    onChange={(evt, value) => dispatch(kitchenActions.setToasterSetting(value))}
+                    onChangeCommitted={
+                        async (evt, value) => {
+                            // dispatch(kitchenActions.setToasterSetting(value));
+                            if (value !== toasterSetting) {
+
+                                await PubSub.publish('kitchen/toaster', {"toasterSetting": value});
+                            }
+                        }
+                    }                      
                 />
             </Grid>
         </Grid>
