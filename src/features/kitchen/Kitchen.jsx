@@ -39,7 +39,7 @@ const useStyles = makeStyles({
         backgroundColor: '#ccefff',
         // color: 'white'
     }
-})
+});
 
 
   export default function Kitchen(props) {

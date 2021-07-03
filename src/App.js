@@ -7,7 +7,8 @@ import {
   Route,
   Link,
   NavLink,
-  Redirect
+  Redirect,
+  withRouter
 } from 'react-router-dom';
 import {
   AppBar,
@@ -18,7 +19,8 @@ import {
   Button,
   Grid,
   TextField,
-  Menu
+  Menu,
+  MenuItem
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Amplify, { PubSub } from 'aws-amplify';
@@ -27,6 +29,7 @@ import Home from './views/Home';
 import Kitchen from './features/kitchen/Kitchen';
 import kitchenSlice, { setToasterSetting } from './features/kitchen/kitchenSlice';
 import store from './store';
+import CustomAppBar from './CustomAppBar';
 
 
 
@@ -58,43 +61,11 @@ Amplify.PubSub.subscribe('kitchen/toaster').subscribe({
 });
 
 
-export default function App() {
-  const [anchorEl, setAnchorEl] = useState(null);
-
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  }
-
-
+export default function App(props) {
   return (
     <div>
       <Router>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton edge="start" className="menubutton" color="inherit" aria-label="menu" onClick={(evt) => setAnchorEl(evt.currentTarget)}>
-              <MenuIcon />
-            </IconButton>
-            <Menu
-                id="nav-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-            >
-              {/* <MenuItem onClick={handleClose}>Home</MenuItem>
-              <MenuItem>
-                <Link>Kitchen</Link>
-              </MenuItem> */}
-              <Link to="/home">Home</Link>
-              <Link to="/kitchen">Kitchen</Link>
-            </Menu>
-            <Typography variant="h6" className="title">
-              Home
-            </Typography>
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
+        <CustomAppBar />
         <Switch>
           <Route exact path="/">
             <Redirect to="/home" />
