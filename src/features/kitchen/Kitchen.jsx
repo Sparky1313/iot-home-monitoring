@@ -31,13 +31,13 @@ import {
     Title
 } from '@devexpress/dx-react-chart-material-ui';
 import { Animation } from '@devexpress/dx-react-chart';
-import { kitchenSlice } from './kitchenSlice';
+import { kitchenSlice, setToasterSliderUIVal } from './kitchenSlice';
 import { PubSub } from 'aws-amplify';
 import {$, jquery} from 'jquery';
 import { SortRounded } from '@material-ui/icons';
 import Sound from 'react-sound';
 import ding from '../../media/Ding-da-ding-ding.mp3';
-import { useEffect } from 'react';
+import { useEffect, createRef } from 'react';
 
 
 const useStyles = makeStyles({
@@ -65,17 +65,17 @@ const theme = {
     const [toasterSliderVal, setToasterSliderVal] = useState(toasterSetting);
     const classes = useStyles();
     const dispatch = useDispatch();
-    let doValsMatch = toasterSliderVal === toasterSetting ? true : false;
+    // let doValsMatch = toasterSliderVal === toasterSetting ? true : false;
 
-    useEffect( () => {
-        console.log("use effect was run");
-        if (toasterSliderVal !== toasterSetting) {
-            console.log("inside if statement");
-            console.log("Before " + document.getElementById('toaster-slider').value);
-            document.getElementById('toaster-slider').value = toasterSetting;
-            console.log("After " + document.getElementById('toaster-slider').value);
-        }
-    });
+    // useEffect( () => {
+    //     console.log("use effect was run");
+    //     if (toasterSliderVal !== toasterSetting) {
+    //         // console.log("inside if statement");
+    //         // console.log("Before " + document.getElementById('toaster-slider').value);
+    //         document.getElementById('toaster-slider').value = 9;
+    //         // console.log("After " + document.getElementById('toaster-slider').value);
+    //     }
+    // });
       
     //   let toasterTemp = useSelector(state => state.kitchen.toasterSetting);    // In order to update slider with sliding functionality still enable look into creating a helper component that has a MutationOberser and then manipulates the DOM's slider directly.
     //   function updateSliderFromRemoteChange() {
@@ -176,9 +176,9 @@ const theme = {
                                 <ListItem>
                                     <ListItemText align="center" primary={`Toasting time left:\t${useSelector(state => state.kitchen.ovenTemp)}`} />
                                 </ListItem>
-                                <ListItem>
+                                {/* <ListItem>
                                     <ListItemText align="center" primary={`Slider Value:\t${toasterSliderVal}`} />
-                                </ListItem>
+                                </ListItem> */}
                             </List>
                         </CardContent>
                     </Card>
@@ -228,19 +228,17 @@ const theme = {
                             <Slider id="toaster-slider"
                                 align="center"
                                 defaultValue={useSelector(state => state.kitchen.toasterSetting)}
-                                // value = {toasterSetting}
+                                value = {useSelector(state => state.kitchen.toasterSliderUIVal)}
                                 min={1}
                                 max={10}
                                 step={1}
                                 valueLabelDisplay="on"
                                 marks={toasterSettingMarks}
-                                // onChange={(evt, value) => document.getElementById('toaster-slider').value = value}
+                                onChange={(evt, value) => dispatch(setToasterSliderUIVal(value))}
                                 onChangeCommitted={
                                     async (evt, value) => {
                                         if (value !== toasterSetting) {
-
                                             await PubSub.publish('kitchen/toaster', {"toasterSetting": value});
-                                            setToasterSliderVal(value);
                                         }
                                     }
                                 }                      
