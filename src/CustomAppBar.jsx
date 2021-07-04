@@ -1,19 +1,11 @@
 import React, { useState } from 'react';
-import logo, { ReactComponent } from './logo.svg';
-import './App.css';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
   Link,
-  NavLink,
-  Redirect,
   withRouter
 } from 'react-router-dom';
 import {
   AppBar,
   Typography,
-  // MenuIcon,
   IconButton,
   Toolbar,
   Button,
@@ -33,6 +25,10 @@ function CustomAppBar(props) {
     };
 
     const getPageName = () => {
+        if (props.location.pathname.length === 1) {
+            return;
+        }
+
         let pageName = '';
         let pageNameWords = props.location.pathname.substring(1).split('-');
         

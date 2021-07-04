@@ -31,6 +31,10 @@ import {
 import { Animation } from '@devexpress/dx-react-chart';
 import { kitchenSlice } from './kitchenSlice';
 import { PubSub } from 'aws-amplify';
+import {$, jquery} from 'jquery';
+import { SortRounded } from '@material-ui/icons';
+import Sound from 'react-sound';
+import ding from '../../media/Ding-da-ding-ding.mp3';
 
 
 const useStyles = makeStyles({
@@ -43,10 +47,24 @@ const useStyles = makeStyles({
 
 
   export default function Kitchen(props) {
+    //   const [toasterSliderVal, setToasterSliderVal] = useState(null);
       const classes = useStyles();
       const dispatch = useDispatch();
-      const kitchenActions = kitchenSlice.actions;
       let toasterSetting = useSelector(state => state.kitchen.toasterSetting);
+      let isToastDone = useSelector(state => state.kitchen.isToastDone)
+    //   let toasterTemp = useSelector(state => state.kitchen.toasterSetting);    // In order to update slider with sliding functionality still enable look into creating a helper component that has a MutationOberser and then manipulates the DOM's slider directly.
+    //   function updateSliderFromRemoteChange() {
+    //     //   if (toasterSetting === $("#toaster-slider").val()) {
+    //         //   let val = $("#toaster-slider").val();
+    //         let val = document.getElementById('toaster-slider').value;
+    //         if (toasterSetting !== toasterSliderVal) {
+    //             document.getElementById('toaster-slider').value = toasterSetting;
+    //         }
+    //         // return console.log(toasterSliderVal);
+    //     //   }
+    //   };
+
+    //   let toasterRead = updateSliderFromRemoteChange();
       
       const toasterSettingMarks = [
         {
@@ -113,10 +131,14 @@ const useStyles = makeStyles({
                             <ListItem>
                                 <ListItemText align="center" primary={`Patient Date of Birth:\t${useSelector(state => state.kitchen.ovenTemp)}`} />
                             </ListItem>
+                            {/* <ListItem>
+                                <ListItemText align="center" primary={toasterRead} />
+                            </ListItem> */}
                         </List>
                     </CardContent>
                 </Card>
             </Grid>
+            {/* <button type="button" onClick={updateSliderFromRemoteChange}>Update</button> */}
             {/* <Link to="/Home">Home</Link> */}
             {/* <Chart data={chartData}>
                 <PieSeries
@@ -126,16 +148,18 @@ const useStyles = makeStyles({
                 <Title text="Toaster Setting" />
             </Chart> */}
             <Grid item xs={10} sm={8} md={6} xl={4}>
-                <Slider align="center"
-                    defaultValue={toasterSetting}
+                <Slider id="toaster-slider"
+                    align="center"
+                    defaultValue={useSelector(state => state.kitchen.toasterSetting)}
+                    // value = {toasterTemp}
                     min={1}
                     max={10}
                     step={1}
                     valueLabelDisplay="on"
                     marks={toasterSettingMarks}
+                    onChange={(evt, value) => document.getElementById('toaster-slider').value = value}
                     onChangeCommitted={
                         async (evt, value) => {
-                            // dispatch(kitchenActions.setToasterSetting(value));
                             if (value !== toasterSetting) {
 
                                 await PubSub.publish('kitchen/toaster', {"toasterSetting": value});
@@ -143,7 +167,19 @@ const useStyles = makeStyles({
                         }
                     }                      
                 />
+                {
+                    isToastDone && 
+                        <Sound
+                            url={ding}
+                            playStatus={Sound.status.PLAYING}
+                            // playFromPosition={300}
+                            // onLoading={handleSongLoading}
+                            // onPlaying={handleSongPlaying}
+                            // onFinishedPlaying={this.handleSongFinishedPlaying}
+                            loop={true}
+                        />
+                }
             </Grid>
-        </Grid>
+        </Grid>      
     )
   }

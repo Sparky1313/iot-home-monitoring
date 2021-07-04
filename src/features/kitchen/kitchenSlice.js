@@ -9,6 +9,7 @@ export const kitchenSlice = createSlice({
     initialState: {
         isToasterOn: false,
         toasterSetting: 1,
+        isToastDone: false,
         isOvenOn: false,
         ovenTemp: 0
     },
@@ -16,6 +17,8 @@ export const kitchenSlice = createSlice({
         turnOnToaster: (state) => {state.isToasterOn = true},
         turnOffToaster: (state) => {state.isToasterOn = false},
         setToasterSetting: (state, action) => {state.toasterSetting = action.payload},
+        turnOnToasterAlert: (state) => {state.isToastDone = true},
+        turnOffToasterAlert: (state) => {state.isToastDone = false},
         
         turnOnOven: (state) => {state.isOvenOn = true},
         turnOffOven: (state) => {state.isOvenOn = false},
@@ -24,5 +27,5 @@ export const kitchenSlice = createSlice({
 });
 
 
-export const { turnOnToaster, turnOffToaster, setToasterSetting, turnOnOven, turnOffOven, setOvenTemp } = kitchenSlice.actions;
+export const { turnOnToaster, turnOffToaster, setToasterSetting, turnOnToasterAlert, turnOffToasterAlert, turnOnOven, turnOffOven, setOvenTemp } = kitchenSlice.actions;
 export default kitchenSlice.reducer;
