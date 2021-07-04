@@ -65,33 +65,8 @@ const theme = {
     const [toasterSliderVal, setToasterSliderVal] = useState(toasterSetting);
     const classes = useStyles();
     const dispatch = useDispatch();
-    // let doValsMatch = toasterSliderVal === toasterSetting ? true : false;
-
-    // useEffect( () => {
-    //     console.log("use effect was run");
-    //     if (toasterSliderVal !== toasterSetting) {
-    //         // console.log("inside if statement");
-    //         // console.log("Before " + document.getElementById('toaster-slider').value);
-    //         document.getElementById('toaster-slider').value = 9;
-    //         // console.log("After " + document.getElementById('toaster-slider').value);
-    //     }
-    // });
       
-    //   let toasterTemp = useSelector(state => state.kitchen.toasterSetting);    // In order to update slider with sliding functionality still enable look into creating a helper component that has a MutationOberser and then manipulates the DOM's slider directly.
-    //   function updateSliderFromRemoteChange() {
-    //     //   if (toasterSetting === $("#toaster-slider").val()) {
-    //         //   let val = $("#toaster-slider").val();
-    //         let val = document.getElementById('toaster-slider').value;
-    //         if (toasterSetting !== toasterSliderVal) {
-    //             document.getElementById('toaster-slider').value = toasterSetting;
-    //         }
-    //         // return console.log(toasterSliderVal);
-    //     //   }
-    //   };
-
-    //   let toasterRead = updateSliderFromRemoteChange();
-      
-      const toasterSettingMarks = [
+    const toasterSettingMarks = [
         {
             value: 1,
             label: '1'
@@ -132,7 +107,7 @@ const theme = {
             value: 10,
             label: '10'
         }
-      ];
+    ];
 
     return (
         <div>
@@ -157,7 +132,6 @@ const theme = {
                     </Alert>
                 </Grid>
             }
-            {/* {doValsMatch ? console.log("Do match " + toasterSliderVal + " " + toasterSetting) : console.log("Don't match " + toasterSliderVal + " " + toasterSetting)} */}
             <Grid item xs={10} sm={8} md={6} xl={4}>
                 <Box pt={2} pb={1} px={1}>
                     <Card className={classes.card} align="center">
@@ -176,40 +150,21 @@ const theme = {
                                 <ListItem>
                                     <ListItemText align="center" primary={`Toasting time left:\t${useSelector(state => state.kitchen.ovenTemp)}`} />
                                 </ListItem>
-                                {/* <ListItem>
-                                    <ListItemText align="center" primary={`Slider Value:\t${toasterSliderVal}`} />
-                                </ListItem> */}
                             </List>
+                            <Button 
+                                onClick={
+                                    async (evt, value) => {
+                                        await PubSub.publish('kitchen/toaster', {"isToasterOn": true}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
+                                    }
+                                }
+                            >
+                            Start Toasting!
+                            </Button>
                         </CardContent>
                     </Card>
                 </Box>
             </Grid>
         </Grid>
-            {/* <Grid item xs={1} sm={2} md={3} xl={4} />
-            <Grid item xs={10} sm={8} md={6} xl={4}>
-                <Box pt={2} pb={1} px={1}>
-                    <Card className={classes.card} align="center">
-                        <CardHeader fontWeight="fontWeightBold" title="Toaster Info" />
-                        <CardContent>
-                            <List>
-                                <ListItem>
-                                    <ListItemText align="center" primary={`Toaster On:\t${useSelector(state => state.kitchen.isToasterOn)}`} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText align="center" primary={`Toaster Setting:\t\t${useSelector(state => state.kitchen.toasterSetting)}`} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText align="center" primary={`Toast Done:\t${useSelector(state => state.kitchen.isToastDone)}`} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText align="center" primary={`Toasting time left:\t${useSelector(state => state.kitchen.ovenTemp)}`} />
-                                </ListItem>
-                            </List>
-                        </CardContent>
-                    </Card>
-                </Box>
-            </Grid>
-            <Grid item xs={1} sm={2} md={3} xl={4} /> */}
             {/* <button type="button" onClick={updateSliderFromRemoteChange}>Update</button> */}
             {/* <Link to="/Home">Home</Link> */}
             {/* <Chart data={chartData}>
@@ -238,7 +193,7 @@ const theme = {
                                 onChangeCommitted={
                                     async (evt, value) => {
                                         if (value !== toasterSetting) {
-                                            await PubSub.publish('kitchen/toaster', {"toasterSetting": value});
+                                            await PubSub.publish('kitchen/toaster', {"toasterSetting": value}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
                                         }
                                     }
                                 }                      
@@ -247,7 +202,7 @@ const theme = {
                     </Card>
                 </Box>
             </Grid>
-        </Grid>   
+        </Grid>
         </div>   
     )
   }

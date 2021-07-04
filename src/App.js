@@ -27,7 +27,7 @@ import Amplify, { PubSub } from 'aws-amplify';
 import { AWSIoTProvider } from '@aws-amplify/pubsub/lib/Providers';
 import Home from './views/Home';
 import Kitchen from './features/kitchen/Kitchen';
-import kitchenSlice, { setToasterSetting, setToasterSliderUIVal, turnOffToasterAlert, turnOnToasterAlert } from './features/kitchen/kitchenSlice';
+import kitchenSlice, { setToasterSetting, setToasterSliderUIVal, turnOnToaster, turnOffToaster, turnOffToasterAlert, turnOnToasterAlert } from './features/kitchen/kitchenSlice';
 import store from './store';
 import CustomAppBar from './CustomAppBar';
 
@@ -52,6 +52,13 @@ Amplify.PubSub.subscribe('kitchen/toaster').subscribe({
     // console.log('Message received', data);
     // console.log("The value is:" + data.value.toasterSetting);
     // console.log(data.value.isToastDone);
+
+    if (data.value.isToasterOn === true) {
+      store.dispatch(turnOnToaster());
+    }
+    else if (data.value.isToasterOn === false) {
+      store.dispatch(turnOffToaster());
+    }
 
     if (data.value.toasterSetting >= 0) {
       store.dispatch(setToasterSetting(data.value.toasterSetting));
