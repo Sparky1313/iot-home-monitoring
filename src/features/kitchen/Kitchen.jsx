@@ -20,8 +20,10 @@ import {
     Card,
     CardHeader,
     CardContent,
-    Slider
+    Slider,
+    Box
   } from '@material-ui/core';
+  import Alert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
     Chart,
@@ -35,23 +37,46 @@ import {$, jquery} from 'jquery';
 import { SortRounded } from '@material-ui/icons';
 import Sound from 'react-sound';
 import ding from '../../media/Ding-da-ding-ding.mp3';
+import { useEffect } from 'react';
 
 
 const useStyles = makeStyles({
     root: {
         // backgroundColor: '#4dc3ff',
-        backgroundColor: '#ccefff',
+        padding: 8
         // color: 'white'
+    },
+    card: {
+        backgroundColor: '#ccefff',
+        // padding: 8
     }
 });
 
+const theme = {
+    spacing: 8
+}
+
 
   export default function Kitchen(props) {
-    //   const [toasterSliderVal, setToasterSliderVal] = useState(null);
-      const classes = useStyles();
-      const dispatch = useDispatch();
-      let toasterSetting = useSelector(state => state.kitchen.toasterSetting);
-      let isToastDone = useSelector(state => state.kitchen.isToastDone)
+    let toasterSetting = useSelector(state => state.kitchen.toasterSetting);
+    let isToastDone = useSelector(state => state.kitchen.isToastDone);
+    
+
+    const [toasterSliderVal, setToasterSliderVal] = useState(toasterSetting);
+    const classes = useStyles();
+    const dispatch = useDispatch();
+    let doValsMatch = toasterSliderVal === toasterSetting ? true : false;
+
+    useEffect( () => {
+        console.log("use effect was run");
+        if (toasterSliderVal !== toasterSetting) {
+            console.log("inside if statement");
+            console.log("Before " + document.getElementById('toaster-slider').value);
+            document.getElementById('toaster-slider').value = toasterSetting;
+            console.log("After " + document.getElementById('toaster-slider').value);
+        }
+    });
+      
     //   let toasterTemp = useSelector(state => state.kitchen.toasterSetting);    // In order to update slider with sliding functionality still enable look into creating a helper component that has a MutationOberser and then manipulates the DOM's slider directly.
     //   function updateSliderFromRemoteChange() {
     //     //   if (toasterSetting === $("#toaster-slider").val()) {
@@ -109,66 +134,17 @@ const useStyles = makeStyles({
         }
       ];
 
-    
-
-
     return (
+        <div>
         <Grid justify="center" container>
-            <Grid item xs={10} sm={8} md={6} xl={4}>
-                <Card className={classes.root} align="center">
-                    <CardHeader fontWeight="fontWeightBold" title="Patient Info" />
-                    <CardContent>
-                        <List>
-                            <ListItem>
-                                <ListItemText align="center" primary={`Patient Id:\t${useSelector(state => state.kitchen.isToasterOn)}`} />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText align="center" primary={`Patient First Name:\t\t${useSelector(state => state.kitchen.toasterSetting)}`} />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText align="center" primary={`Patient Last Name:\t${useSelector(state => state.kitchen.isOvenOn)}`} />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText align="center" primary={`Patient Date of Birth:\t${useSelector(state => state.kitchen.ovenTemp)}`} />
-                            </ListItem>
-                            {/* <ListItem>
-                                <ListItemText align="center" primary={toasterRead} />
-                            </ListItem> */}
-                        </List>
-                    </CardContent>
-                </Card>
-            </Grid>
-            {/* <button type="button" onClick={updateSliderFromRemoteChange}>Update</button> */}
-            {/* <Link to="/Home">Home</Link> */}
-            {/* <Chart data={chartData}>
-                <PieSeries
-                    valueField="val"
-                    argumentField=""
-                />
-                <Title text="Toaster Setting" />
-            </Chart> */}
-            <Grid item xs={10} sm={8} md={6} xl={4}>
-                <Slider id="toaster-slider"
-                    align="center"
-                    defaultValue={useSelector(state => state.kitchen.toasterSetting)}
-                    // value = {toasterTemp}
-                    min={1}
-                    max={10}
-                    step={1}
-                    valueLabelDisplay="on"
-                    marks={toasterSettingMarks}
-                    onChange={(evt, value) => document.getElementById('toaster-slider').value = value}
-                    onChangeCommitted={
-                        async (evt, value) => {
-                            if (value !== toasterSetting) {
-
-                                await PubSub.publish('kitchen/toaster', {"toasterSetting": value});
-                            }
-                        }
-                    }                      
-                />
-                {
-                    isToastDone && 
+            {
+                isToastDone &&
+                <Grid item xs={12}>
+                    <Alert
+                        severity="warning"
+                    >
+                        Your toast is done!
+                        <Button onClick={async (evt) => await PubSub.publish('kitchen/toaster', {"isToastDone": false})}>Clear</Button>
                         <Sound
                             url={ding}
                             playStatus={Sound.status.PLAYING}
@@ -178,8 +154,102 @@ const useStyles = makeStyles({
                             // onFinishedPlaying={this.handleSongFinishedPlaying}
                             loop={true}
                         />
-                }
+                    </Alert>
+                </Grid>
+            }
+            {/* {doValsMatch ? console.log("Do match " + toasterSliderVal + " " + toasterSetting) : console.log("Don't match " + toasterSliderVal + " " + toasterSetting)} */}
+            <Grid item xs={10} sm={8} md={6} xl={4}>
+                <Box pt={2} pb={1} px={1}>
+                    <Card className={classes.card} align="center">
+                        <CardHeader fontWeight="fontWeightBold" title="Toaster Overview" />
+                        <CardContent>
+                            <List>
+                                <ListItem>
+                                    <ListItemText align="center" primary={`Toaster On:\t${useSelector(state => state.kitchen.isToasterOn)}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText align="center" primary={`Toaster Setting:\t\t${useSelector(state => state.kitchen.toasterSetting)}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText align="center" primary={`Toast Done:\t${useSelector(state => state.kitchen.isToastDone)}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText align="center" primary={`Toasting time left:\t${useSelector(state => state.kitchen.ovenTemp)}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText align="center" primary={`Slider Value:\t${toasterSliderVal}`} />
+                                </ListItem>
+                            </List>
+                        </CardContent>
+                    </Card>
+                </Box>
             </Grid>
-        </Grid>      
+        </Grid>
+            {/* <Grid item xs={1} sm={2} md={3} xl={4} />
+            <Grid item xs={10} sm={8} md={6} xl={4}>
+                <Box pt={2} pb={1} px={1}>
+                    <Card className={classes.card} align="center">
+                        <CardHeader fontWeight="fontWeightBold" title="Toaster Info" />
+                        <CardContent>
+                            <List>
+                                <ListItem>
+                                    <ListItemText align="center" primary={`Toaster On:\t${useSelector(state => state.kitchen.isToasterOn)}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText align="center" primary={`Toaster Setting:\t\t${useSelector(state => state.kitchen.toasterSetting)}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText align="center" primary={`Toast Done:\t${useSelector(state => state.kitchen.isToastDone)}`} />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText align="center" primary={`Toasting time left:\t${useSelector(state => state.kitchen.ovenTemp)}`} />
+                                </ListItem>
+                            </List>
+                        </CardContent>
+                    </Card>
+                </Box>
+            </Grid>
+            <Grid item xs={1} sm={2} md={3} xl={4} /> */}
+            {/* <button type="button" onClick={updateSliderFromRemoteChange}>Update</button> */}
+            {/* <Link to="/Home">Home</Link> */}
+            {/* <Chart data={chartData}>
+                <PieSeries
+                    valueField="val"
+                    argumentField=""
+                />
+                <Title text="Toaster Setting" />
+            </Chart> */}
+        <Grid justify="center" container>
+            <Grid item xs={10} sm={8} md={6} xl={4} m={4}>
+                <Box p={1}>
+                    <Card className={classes.card} align="center">
+                        <CardHeader fontWeight="fontWeightBold" title="Toaster Setting" />
+                        <CardContent>
+                            <Slider id="toaster-slider"
+                                align="center"
+                                defaultValue={useSelector(state => state.kitchen.toasterSetting)}
+                                // value = {toasterSetting}
+                                min={1}
+                                max={10}
+                                step={1}
+                                valueLabelDisplay="on"
+                                marks={toasterSettingMarks}
+                                // onChange={(evt, value) => document.getElementById('toaster-slider').value = value}
+                                onChangeCommitted={
+                                    async (evt, value) => {
+                                        if (value !== toasterSetting) {
+
+                                            await PubSub.publish('kitchen/toaster', {"toasterSetting": value});
+                                            setToasterSliderVal(value);
+                                        }
+                                    }
+                                }                      
+                            />
+                        </CardContent>
+                    </Card>
+                </Box>
+            </Grid>
+        </Grid>   
+        </div>   
     )
   }

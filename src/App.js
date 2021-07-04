@@ -49,9 +49,9 @@ Amplify.addPluggable(new AWSIoTProvider({
 
 Amplify.PubSub.subscribe('kitchen/toaster').subscribe({
   next: data => {
-    console.log('Message received', data);
-    console.log("The value is:" + data.value.toasterSetting);
-    console.log(data.value.isToastDone);
+    // console.log('Message received', data);
+    // console.log("The value is:" + data.value.toasterSetting);
+    // console.log(data.value.isToastDone);
 
     if (data.value.toasterSetting >= 0) {
       store.dispatch(setToasterSetting(data.value.toasterSetting));
@@ -59,7 +59,7 @@ Amplify.PubSub.subscribe('kitchen/toaster').subscribe({
 
     if (data.value.isToastDone === true) {
       store.dispatch(turnOnToasterAlert());
-      console.log(data.value.isToastDone)
+      // console.log(data.value.isToastDone)
     }
     else if (data.value.isToastDone === false) {
       store.dispatch(turnOffToasterAlert());
