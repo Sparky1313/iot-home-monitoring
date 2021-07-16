@@ -29,8 +29,7 @@ import Home from './views/Home';
 import Kitchen from './features/kitchen/Kitchen';
 import kitchenSlice, { setToasterSetting, setToasterSliderUIVal, turnOnToaster, turnOffToaster, turnOffToasterAlert, turnOnToasterAlert } from './features/kitchen/kitchenSlice';
 import store from './store';
-import CustomAppBar from './CustomAppBar';
-
+import CustomAppBar from './components/CustomAppBar';
 
 
 Amplify.configure({
@@ -81,26 +80,24 @@ Amplify.PubSub.subscribe('kitchen/toaster').subscribe({
 export default function App(props) {
   return (
     <div>
-      <Router>
-        <CustomAppBar />
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-          <Route exact path="/home">
-            <Home />
-          </Route>
-          <Route exact path="/kitchen">
-            <Kitchen />
-          </Route>
-          {/* <Route exact path="/UserProfile">
-            <UserProfile />
-          </Route>
-          <Route exact path="/Appointments">
-            <Appointments />
-          </Route> */}
-        </Switch>
-      </Router>
+      <CustomAppBar />
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/home" />
+        </Route>
+        <Route exact path="/home">
+          <Home />
+        </Route>
+        <Route exact path="/kitchen">
+          <Kitchen />
+        </Route>
+        {/* <Route exact path="/UserProfile">
+          <UserProfile />
+        </Route>
+        <Route exact path="/Appointments">
+          <Appointments />
+        </Route> */}
+      </Switch>
     </div>
   );
 }

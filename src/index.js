@@ -5,12 +5,19 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './store';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Auth0ProviderWithHistory from './auth0-provider-with-history';
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <Router>
+      <Auth0ProviderWithHistory>
+        <Provider store={store}>
+          <App />
+        </Provider>
+    </Auth0ProviderWithHistory>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

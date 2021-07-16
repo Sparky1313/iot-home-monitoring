@@ -23,7 +23,7 @@ import {
     Slider,
     Box
   } from '@material-ui/core';
-  import Alert from '@material-ui/lab/Alert';
+import Alert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
     Chart,

@@ -15,10 +15,13 @@ import {
   MenuItem
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-
+import LoginButton from '../components/LoginButton';
+import LogoutButton from './LogoutButton';
+import { useAuth0 } from "@auth0/auth0-react";
 
 function CustomAppBar(props) {
     const [anchorEl, setAnchorEl] = useState(null);
+    const { error, user, isAuthenticated, isLoading } = useAuth0();
     
     const handleClose = () => {
         setAnchorEl(null);
@@ -62,6 +65,9 @@ function CustomAppBar(props) {
                 <Typography variant="h6" className="title">
                     {getPageName()}
                 </Typography>
+                {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+                {/* <LogoutButton /> */}
+                {console.log("User: " + user + "\nAuthenticated: " + isAuthenticated + "\nIsLoading: " + isLoading +  "\nError: " + error)}
                 <Button color="inherit">Login</Button>
             </Toolbar>
         </AppBar>
