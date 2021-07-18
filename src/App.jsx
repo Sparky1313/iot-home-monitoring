@@ -46,7 +46,7 @@ Amplify.addPluggable(new AWSIoTProvider({
   aws_pubsub_endpoint: `wss://${process.env.REACT_APP_MQTT_ID}.iot.${process.env.REACT_APP_REGION}.amazonaws.com/mqtt`,
 }));
 
-Amplify.PubSub.subscribe('kitchen/toaster').subscribe({
+Amplify.PubSub.subscribe('cmd/smart-house/kitchen/toaster/res').subscribe({
   next: data => {
     // console.log('Message received', data);
     // console.log("The value is:" + data.value.toasterSetting);
@@ -54,12 +54,11 @@ Amplify.PubSub.subscribe('kitchen/toaster').subscribe({
 
     if (data.value.isToasterOn === true) {
       store.dispatch(turnOnToaster());
-    }
-    else if (data.value.isToasterOn === false) {
+    } else if (data.value.isToasterOn === false) {
       store.dispatch(turnOffToaster());
     }
 
-    if (data.value.toasterSetting >= 0) {
+    if (data.value.toasterSetting >= 1 && data.value.toasterSetting <= 10) {
       store.dispatch(setToasterSetting(data.value.toasterSetting));
       store.dispatch(setToasterSliderUIVal(data.value.toasterSetting));
     }
@@ -67,10 +66,14 @@ Amplify.PubSub.subscribe('kitchen/toaster').subscribe({
     if (data.value.isToastDone === true) {
       store.dispatch(turnOnToasterAlert());
       // console.log(data.value.isToastDone)
-    }
-    else if (data.value.isToastDone === false) {
+    } else if (data.value.timeUntilDone) {
       store.dispatch(turnOffToasterAlert());
     }
+
+    // if (typeof data.value.toasterTime === 'number') {
+    //   store.dispatch()
+    // }
+
   },
   error: error => console.error(error),
   close: () => console.log('Done'),

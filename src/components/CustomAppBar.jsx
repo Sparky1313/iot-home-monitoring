@@ -68,7 +68,6 @@ function CustomAppBar(props) {
                 {isAuthenticated ? <LogoutButton /> : <LoginButton />}
                 {/* <LogoutButton /> */}
                 {console.log("User: " + user + "\nAuthenticated: " + isAuthenticated + "\nIsLoading: " + isLoading +  "\nError: " + error)}
-                <Button color="inherit">Login</Button>
             </Toolbar>
         </AppBar>
     );

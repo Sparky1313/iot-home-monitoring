@@ -5,7 +5,7 @@ import { Button } from "@material-ui/core";
 const LoginButton = () => {
   const { loginWithPopup } = useAuth0();
 
-  return <Button onClick={() => loginWithPopup()}>Log In</Button>;
+  return <Button color="inherit" onClick={() => loginWithPopup()}>Log In</Button>;
 };
 
 export default LoginButton;
