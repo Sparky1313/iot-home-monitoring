@@ -31,7 +31,7 @@ import {
     Title
 } from '@devexpress/dx-react-chart-material-ui';
 import { Animation } from '@devexpress/dx-react-chart';
-import { kitchenSlice, setToasterSliderUIVal } from './kitchenSlice';
+import { kitchenSlice, setToasterSetting, setToasterSliderUIVal, turnOffToasterAlert } from './kitchenSlice';
 import { PubSub } from 'aws-amplify';
 import {$, jquery} from 'jquery';
 import { SortRounded } from '@material-ui/icons';
@@ -56,9 +56,12 @@ const theme = {
     spacing: 8
 }
 
+const PUBLISH_TOPIC_NAME = 'cmd/smart-house/kitchen/toaster/req';
+
 
   export default function Kitchen(props) {
     let toasterSetting = useSelector(state => state.kitchen.toasterSetting);
+    let isToasterOn = useSelector(state => state.kitchen.isToasterOn);
     let isToastDone = useSelector(state => state.kitchen.isToastDone);
     
 
@@ -119,7 +122,8 @@ const theme = {
                         severity="warning"
                     >
                         Your toast is done!
-                        <Button onClick={async (evt) => await PubSub.publish('kitchen/toaster', {"isToastDone": false})}>Clear</Button>
+                        {/* <Button onClick={async (evt) => await PubSub.publish(PUBLISH_TOPIC_NAME, {"isToastDone": false})}>Clear</Button> */}
+                        <Button onClick={(evt) => dispatch(turnOffToasterAlert())}>Clear</Button> {/* Make an alerts component */}
                         <Sound
                             url={ding}
                             playStatus={Sound.status.PLAYING}
@@ -154,7 +158,7 @@ const theme = {
                             <Button 
                                 onClick={
                                     async (evt, value) => {
-                                        await PubSub.publish('kitchen/toaster', {"isToasterOn": true}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
+                                        await PubSub.publish(PUBLISH_TOPIC_NAME, {"startToasting": true, "toasterSetting": toasterSetting}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
                                     }
                                 }
                             >
@@ -182,6 +186,7 @@ const theme = {
                         <CardContent>
                             <Slider id="toaster-slider"
                                 align="center"
+                                disabled={isToasterOn}
                                 defaultValue={useSelector(state => state.kitchen.toasterSetting)}
                                 value = {useSelector(state => state.kitchen.toasterSliderUIVal)}
                                 min={1}
@@ -191,12 +196,17 @@ const theme = {
                                 marks={toasterSettingMarks}
                                 onChange={(evt, value) => dispatch(setToasterSliderUIVal(value))}
                                 onChangeCommitted={
-                                    async (evt, value) => {
-                                        if (value !== toasterSetting) {
-                                            await PubSub.publish('kitchen/toaster', {"toasterSetting": value}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
+                                    (evt, value) => {
+                                        if (value !== toasterSetting && isToasterOn === false) {
+                                            dispatch(setToasterSetting(value));
                                         }
                                     }
-                                }                      
+                                    // async (evt, value) => {
+                                    //     if (value !== toasterSetting) {
+                                    //         await PubSub.publish(PUBLISH_TOPIC_NAME, {"toasterSetting": value}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
+                                    //     }
+                                    // }
+                                }                    
                             />
                         </CardContent>
                     </Card>

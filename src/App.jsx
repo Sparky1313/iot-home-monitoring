@@ -70,6 +70,7 @@ Amplify.PubSub.subscribe('cmd/smart-house/kitchen/toaster/res').subscribe({
       store.dispatch(turnOffToasterAlert());
     }
 
+    // Look into using web workers to keep track of time when changing pages and then publishing the messages back
     // if (typeof data.value.toasterTime === 'number') {
     //   store.dispatch()
     // }
