@@ -10,6 +10,7 @@ export const kitchenSlice = createSlice({
         toasterSliderUIVal: 1,
         isToasterOn: false,
         toasterSetting: 1,
+        millisUntilToastDone: 0,
         isToastDone: false,
         isOvenOn: false,
         ovenTemp: 0
@@ -19,6 +20,7 @@ export const kitchenSlice = createSlice({
         turnOnToaster: (state) => {state.isToasterOn = true},
         turnOffToaster: (state) => {state.isToasterOn = false},
         setToasterSetting: (state, action) => {state.toasterSetting = action.payload},
+        setMillisUntilToastDone: (state, action) => {state.millisUntilToastDone = action.payload},
         turnOnToasterAlert: (state) => {state.isToastDone = true},
         turnOffToasterAlert: (state) => {state.isToastDone = false},
         
@@ -29,5 +31,5 @@ export const kitchenSlice = createSlice({
 });
 
 
-export const { setToasterSliderUIVal, turnOnToaster, turnOffToaster, setToasterSetting, turnOnToasterAlert, turnOffToasterAlert, turnOnOven, turnOffOven, setOvenTemp } = kitchenSlice.actions;
+export const { setToasterSliderUIVal, turnOnToaster, turnOffToaster, setToasterSetting, setMillisUntilToastDone, turnOnToasterAlert, turnOffToasterAlert, turnOnOven, turnOffOven, setOvenTemp } = kitchenSlice.actions;
 export default kitchenSlice.reducer;

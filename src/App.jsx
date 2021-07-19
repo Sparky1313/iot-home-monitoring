@@ -27,9 +27,10 @@ import Amplify, { PubSub } from 'aws-amplify';
 import { AWSIoTProvider } from '@aws-amplify/pubsub/lib/Providers';
 import Home from './views/Home';
 import Kitchen from './features/kitchen/Kitchen';
-import kitchenSlice, { setToasterSetting, setToasterSliderUIVal, turnOnToaster, turnOffToaster, turnOffToasterAlert, turnOnToasterAlert } from './features/kitchen/kitchenSlice';
+import kitchenSlice, { setToasterSetting, setToasterSliderUIVal, turnOnToaster, turnOffToaster, setMillisUntilToastDone, turnOnToasterAlert, turnOffToasterAlert } from './features/kitchen/kitchenSlice';
 import store from './store';
 import CustomAppBar from './components/CustomAppBar';
+import AlertsBar from './components/AlertsBar';
 
 
 Amplify.configure({
@@ -66,8 +67,8 @@ Amplify.PubSub.subscribe('cmd/smart-house/kitchen/toaster/res').subscribe({
     if (data.value.isToastDone === true) {
       store.dispatch(turnOnToasterAlert());
       // console.log(data.value.isToastDone)
-    } else if (data.value.timeUntilDone) {
-      store.dispatch(turnOffToasterAlert());
+    } else if (data.value.millisUntilToastDone) {
+      store.dispatch(setMillisUntilToastDone(data.value.millisUntilToastDone));
     }
 
     // Look into using web workers to keep track of time when changing pages and then publishing the messages back
@@ -85,6 +86,7 @@ export default function App(props) {
   return (
     <div>
       <CustomAppBar />
+      <AlertsBar />
       <Switch>
         <Route exact path="/">
           <Redirect to="/home" />

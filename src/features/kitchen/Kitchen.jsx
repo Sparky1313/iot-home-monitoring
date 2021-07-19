@@ -114,105 +114,84 @@ const PUBLISH_TOPIC_NAME = 'cmd/smart-house/kitchen/toaster/req';
 
     return (
         <div>
-        <Grid justify="center" container>
-            {
-                isToastDone &&
-                <Grid item xs={12}>
-                    <Alert
-                        severity="warning"
-                    >
-                        Your toast is done!
-                        {/* <Button onClick={async (evt) => await PubSub.publish(PUBLISH_TOPIC_NAME, {"isToastDone": false})}>Clear</Button> */}
-                        <Button onClick={(evt) => dispatch(turnOffToasterAlert())}>Clear</Button> {/* Make an alerts component */}
-                        <Sound
-                            url={ding}
-                            playStatus={Sound.status.PLAYING}
-                            // playFromPosition={300}
-                            // onLoading={handleSongLoading}
-                            // onPlaying={handleSongPlaying}
-                            // onFinishedPlaying={this.handleSongFinishedPlaying}
-                            loop={true}
-                        />
-                    </Alert>
-                </Grid>
-            }
-            <Grid item xs={10} sm={8} md={6} xl={4}>
-                <Box pt={2} pb={1} px={1}>
-                    <Card className={classes.card} align="center">
-                        <CardHeader fontWeight="fontWeightBold" title="Toaster Overview" />
-                        <CardContent>
-                            <List>
-                                <ListItem>
-                                    <ListItemText align="center" primary={`Toaster On:\t${useSelector(state => state.kitchen.isToasterOn)}`} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText align="center" primary={`Toaster Setting:\t\t${useSelector(state => state.kitchen.toasterSetting)}`} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText align="center" primary={`Toast Done:\t${useSelector(state => state.kitchen.isToastDone)}`} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText align="center" primary={`Toasting time left:\t${useSelector(state => state.kitchen.ovenTemp)}`} />
-                                </ListItem>
-                            </List>
-                            <Button 
-                                onClick={
-                                    async (evt, value) => {
-                                        await PubSub.publish(PUBLISH_TOPIC_NAME, {"startToasting": true, "toasterSetting": toasterSetting}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
-                                    }
-                                }
-                            >
-                            Start Toasting!
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </Box>
-            </Grid>
-        </Grid>
-            {/* <button type="button" onClick={updateSliderFromRemoteChange}>Update</button> */}
-            {/* <Link to="/Home">Home</Link> */}
-            {/* <Chart data={chartData}>
-                <PieSeries
-                    valueField="val"
-                    argumentField=""
-                />
-                <Title text="Toaster Setting" />
-            </Chart> */}
-        <Grid justify="center" container>
-            <Grid item xs={10} sm={8} md={6} xl={4} m={4}>
-                <Box p={1}>
-                    <Card className={classes.card} align="center">
-                        <CardHeader fontWeight="fontWeightBold" title="Toaster Setting" />
-                        <CardContent>
-                            <Slider id="toaster-slider"
-                                align="center"
-                                disabled={isToasterOn}
-                                defaultValue={useSelector(state => state.kitchen.toasterSetting)}
-                                value = {useSelector(state => state.kitchen.toasterSliderUIVal)}
-                                min={1}
-                                max={10}
-                                step={1}
-                                valueLabelDisplay="on"
-                                marks={toasterSettingMarks}
-                                onChange={(evt, value) => dispatch(setToasterSliderUIVal(value))}
-                                onChangeCommitted={
-                                    (evt, value) => {
-                                        if (value !== toasterSetting && isToasterOn === false) {
-                                            dispatch(setToasterSetting(value));
+            <Grid justify="center" container>
+                <Grid item xs={10} sm={8} md={6} xl={4}>
+                    <Box pt={2} pb={1} px={1}>
+                        <Card className={classes.card} align="center">
+                            <CardHeader fontWeight="fontWeightBold" title="Toaster Overview" />
+                            <CardContent>
+                                <List>
+                                    <ListItem>
+                                        <ListItemText align="center" primary={`Toaster On:\t${useSelector(state => state.kitchen.isToasterOn)}`} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText align="center" primary={`Toaster Setting:\t\t${useSelector(state => state.kitchen.toasterSetting)}`} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText align="center" primary={`Toast Done:\t${useSelector(state => state.kitchen.isToastDone)}`} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText align="center" primary={`Toasting time left:\t${useSelector(state => state.kitchen.millisUntilToastDone) / 1000} seconds`} />
+                                    </ListItem>
+                                </List>
+                                <Button 
+                                    onClick={
+                                        async (evt, value) => {
+                                            await PubSub.publish(PUBLISH_TOPIC_NAME, {"startToasting": true, "toasterSetting": toasterSetting}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
                                         }
                                     }
-                                    // async (evt, value) => {
-                                    //     if (value !== toasterSetting) {
-                                    //         await PubSub.publish(PUBLISH_TOPIC_NAME, {"toasterSetting": value}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
-                                    //     }
-                                    // }
-                                }                    
-                            />
-                        </CardContent>
-                    </Card>
-                </Box>
+                                >
+                                Start Toasting!
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </Box>
+                </Grid>
             </Grid>
-        </Grid>
+                {/* <button type="button" onClick={updateSliderFromRemoteChange}>Update</button> */}
+                {/* <Link to="/Home">Home</Link> */}
+                {/* <Chart data={chartData}>
+                    <PieSeries
+                        valueField="val"
+                        argumentField=""
+                    />
+                    <Title text="Toaster Setting" />
+                </Chart> */}
+            <Grid justify="center" container>
+                <Grid item xs={10} sm={8} md={6} xl={4} m={4}>
+                    <Box p={1}>
+                        <Card className={classes.card} align="center">
+                            <CardHeader fontWeight="fontWeightBold" title="Toaster Setting" />
+                            <CardContent>
+                                <Slider id="toaster-slider"
+                                    align="center"
+                                    disabled={isToasterOn}
+                                    defaultValue={useSelector(state => state.kitchen.toasterSetting)}
+                                    value = {useSelector(state => state.kitchen.toasterSliderUIVal)}
+                                    min={1}
+                                    max={10}
+                                    step={1}
+                                    valueLabelDisplay="on"
+                                    marks={toasterSettingMarks}
+                                    onChange={(evt, value) => dispatch(setToasterSliderUIVal(value))}
+                                    onChangeCommitted={
+                                        (evt, value) => {
+                                            if (value !== toasterSetting && isToasterOn === false) {
+                                                dispatch(setToasterSetting(value));
+                                            }
+                                        }
+                                        // async (evt, value) => {
+                                        //     if (value !== toasterSetting) {
+                                        //         await PubSub.publish(PUBLISH_TOPIC_NAME, {"toasterSetting": value}); // Add in something so that if this fails that another dispatch is called to change ui back to what it was.  Add in other error handling, too.
+                                        //     }
+                                        // }
+                                    }                    
+                                />
+                            </CardContent>
+                        </Card>
+                    </Box>
+                </Grid>
+            </Grid>
         </div>   
-    )
+    );
   }
